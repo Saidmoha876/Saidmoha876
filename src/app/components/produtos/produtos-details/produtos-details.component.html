@@ -3,8 +3,16 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h3>Cadastrar novo produto</h3>
+                    <h3>{{produto.id > 0 ? 'Editar produto' : 'Cadastrar novo produto'}}</h3>
                     <br>
+
+                    @if (carregando) {
+                        <div class="alert alert-info">Carregando produto...</div>
+                    }
+
+                    @if (mensagemErro) {
+                        <div class="alert alert-danger">{{mensagemErro}}</div>
+                    }
 
                      <mdb-form-control>
                         <input mdbInput type="text" id="nome" class="form-control mb-3" [(ngModel)]='produto.nome'/>
@@ -39,7 +47,7 @@
 
                     <br>
 
-                     <button type="button" class="btn btn-primary" (click)="salvar()" >Salvar</button>
+                     <button type="button" class="btn btn-primary" (click)="salvar()" [disabled]="salvando || carregando">Salvar</button>
 
                 </div>
             </div>

@@ -1,9 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MdbFormsModule } from 'mdb-angular-ui-kit/forms';
-import { Produto } from '../../../models/produto';
+import { Produto, ProdutoPayload } from '../../../models/produto';
 import { ActivatedRoute, Router } from '@angular/router';
-import Swal from 'sweetalert2'
+import Swal from 'sweetalert2';
+import { ProdutoService } from '../../../services/produto.service';
 
 @Component({
   selector: 'app-produtos-details',
@@ -11,41 +12,80 @@ import Swal from 'sweetalert2'
   templateUrl: './produtos-details.component.html',
   styleUrl: './produtos-details.component.scss'
 })
-export class ProdutosDetailsComponent {
+export class ProdutosDetailsComponent implements OnInit {
 
   produto = new Produto(0, '', '', 0, 0, true);
+  carregando = false;
+  salvando = false;
+  mensagemErro = '';
 
-  router = inject(ActivatedRoute);
-  router2 = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly produtoService = inject(ProdutoService);
 
-  constructor() {
-    let id = this.router.snapshot.params['id'];
+  ngOnInit(): void {
+    const id = Number(this.route.snapshot.params['id']);
     if (id > 0) {
       this.findById(id);
     }
   }
 
-  findById(id: number){
-    let produtoRetornado: Produto = new Produto(id, 'Açaí 500ml', 'ACAI', 18.9, 30, true);
-    this.produto = produtoRetornado;
+  findById(id: number): void {
+    this.carregando = true;
+    this.mensagemErro = '';
+
+    this.produtoService.buscarPorId(id).subscribe({
+      next: (produto: Produto) => {
+        this.produto = produto;
+        this.carregando = false;
+      },
+      error: (erro: Error) => {
+        this.mensagemErro = erro.message;
+        this.carregando = false;
+      }
+    });
   }
 
-  salvar(){
-    if(this.produto.id > 0){
-      Swal.fire({
-        title: 'Editado com sucesso!',
-        icon: 'success',
-        confirmButtonText: 'Ok'
-      });
-      this.router2.navigate(['/admin/produtos'],{ state: {produtoEditado: this.produto}})
-    } else {
-      Swal.fire({
-        title: 'Salvo com sucesso!',
-        icon: 'success',
-        confirmButtonText: 'Ok'
-      });
-      this.router2.navigate(['/admin/produtos'],{ state: {produtoNovo: this.produto}})
-    }
+  salvar(): void {
+    this.salvando = true;
+    this.mensagemErro = '';
 
+    if (this.produto.id > 0) {
+      this.produtoService.atualizar(this.produto.id, this.criarPayload()).subscribe({
+        next: () => this.finalizarSalvamento('Editado com sucesso!'),
+        error: (erro: Error) => this.exibirErro(erro)
+      });
+    } else {
+      this.produtoService.cadastrar(this.criarPayload()).subscribe({
+        next: () => this.finalizarSalvamento('Salvo com sucesso!'),
+        error: (erro: Error) => this.exibirErro(erro)
+      });
+    }
+  }
+
+  private criarPayload(): ProdutoPayload {
+    return {
+      nome: this.produto.nome,
+      categoria: this.produto.categoria,
+      preco: this.produto.preco,
+      estoque: this.produto.estoque,
+      disponivel: this.produto.disponivel
+    };
+  }
+
+  private finalizarSalvamento(titulo: string): void {
+    this.salvando = false;
+    Swal.fire({
+      title: titulo,
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    });
+    this.router.navigate(['/admin/produtos']);
+  }
+
+  private exibirErro(erro: Error): void {
+    this.salvando = false;
+    this.mensagemErro = erro.message;
+    Swal.fire('Erro', erro.message, 'error');
   }
 }

@@ -8,6 +8,18 @@
                         <button type="button" class="btn btn-primary" routerLink="/admin/produtos/new">Novo</button>
                     </div>
                     <br>
+
+                    @if (carregando) {
+                        <div class="alert alert-info">Carregando produtos...</div>
+                    }
+
+                    @if (mensagemErro) {
+                        <div class="alert alert-danger">{{mensagemErro}}</div>
+                    }
+
+                    @if (!carregando && lista.length === 0) {
+                        <div class="alert alert-warning">Nenhum produto cadastrado.</div>
+                    } @else {
                     <table border="1" class="table table-striped">
                         <thead>
                             <tr>
@@ -31,6 +43,7 @@
                         }
                         </tbody>
                     </table>
+                    }
 
                 </div>
             </div>

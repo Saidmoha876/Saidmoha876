@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from "@angular/router";
 import { Produto } from '../../../models/produto';
+import { ProdutoService } from '../../../services/produto.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-produtos-list',
@@ -8,41 +10,55 @@ import { Produto } from '../../../models/produto';
   templateUrl: './produtos-list.component.html',
   styleUrl: './produtos-list.component.scss'
 })
-export class ProdutosListComponent {
+export class ProdutosListComponent implements OnInit {
 
-  lista: Produto[] = []
+  lista: Produto[] = [];
+  carregando = false;
+  mensagemErro = '';
 
-  constructor() {
+  private readonly produtoService = inject(ProdutoService);
 
-    this.lista.push(new Produto(1, 'Casquinha de Baunilha', 'CASQUINHA', 8.5, 50, true));
-    this.lista.push(new Produto(2, 'Açaí 500ml', 'ACAI', 18.9, 30, true));
-    this.lista.push(new Produto(3, 'Milk Shake de Morango', 'MILK_SHAKE', 15.0, 20, true));
-
-
-    let produtoNovo = history.state.produtoNovo;
-
-    let produtoEditado = history.state.produtoEditado;
-
-    if(produtoNovo) {
-      produtoNovo.id = 123;
-      this.lista.push(produtoNovo);
-    }
-
-    if(produtoEditado) {
-      console.log(produtoEditado)
-      for(let i = 0; i < this.lista.length; i++) {
-        console.log(produtoEditado.id, this.lista[i].id)
-        if(produtoEditado.id == this.lista[i].id) {
-          console.log("achou")
-          this.lista[i] = produtoEditado
-          break;
-        }
-      }
-    }
-
+  ngOnInit(): void {
+    this.carregarProdutos();
   }
 
-  deletar(produto: Produto) {
+  carregarProdutos(): void {
+    this.carregando = true;
+    this.mensagemErro = '';
 
+    this.produtoService.listar().subscribe({
+      next: (produtos: Produto[]) => {
+        this.lista = produtos;
+        this.carregando = false;
+      },
+      error: (erro: Error) => {
+        this.mensagemErro = erro.message;
+        this.carregando = false;
+      }
+    });
+  }
+
+  deletar(produto: Produto): void {
+    Swal.fire({
+      title: 'Excluir produto?',
+      text: `Deseja excluir ${produto.nome}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, excluir',
+      cancelButtonText: 'Cancelar'
+    }).then((resultado) => {
+      if (resultado.isConfirmed) {
+        this.produtoService.deletar(produto.id).subscribe({
+          next: () => {
+            this.lista = this.lista.filter((item) => item.id !== produto.id);
+            Swal.fire('Excluido!', 'Produto removido com sucesso.', 'success');
+          },
+          error: (erro: Error) => {
+            this.mensagemErro = erro.message;
+            Swal.fire('Erro', erro.message, 'error');
+          }
+        });
+      }
+    });
   }
 }

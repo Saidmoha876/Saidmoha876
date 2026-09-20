@@ -17,3 +17,5 @@ export class Produto {
     this.disponivel = disponivel;
   }
 }
+
+export type ProdutoPayload = Omit<Produto, 'id'>;
