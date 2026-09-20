@@ -19,16 +19,14 @@
                         <label mdbLabel class="form-label" for="nome">Nome</label>
                     </mdb-form-control>
 
-                    <mdb-form-control>
-                        <select id="categoria" class="form-select mb-3" [(ngModel)]='produto.categoria'>
-                            <option value="SORVETE">SORVETE</option>
-                            <option value="CASQUINHA">CASQUINHA</option>
-                            <option value="ACAI">ACAI</option>
-                            <option value="MILK_SHAKE">MILK_SHAKE</option>
-                            <option value="ADICIONAL">ADICIONAL</option>
-                        </select>
-                        <label mdbLabel class="form-label" for="categoria">Categoria</label>
-                    </mdb-form-control>
+                    <label class="form-label" for="categoria">Categoria</label>
+                    <select id="categoria" class="form-select mb-3" [(ngModel)]='produto.categoria'>
+                        <option value="SORVETE">SORVETE</option>
+                        <option value="CASQUINHA">CASQUINHA</option>
+                        <option value="ACAI">ACAI</option>
+                        <option value="MILK_SHAKE">MILK_SHAKE</option>
+                        <option value="ADICIONAL">ADICIONAL</option>
+                    </select>
 
                     <mdb-form-control>
                         <input mdbInput type="number" id="preco" class="form-control mb-3" [(ngModel)]='produto.preco'/>
