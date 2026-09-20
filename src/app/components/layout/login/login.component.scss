@@ -2,3 +2,13 @@
     top: 40vh;
     position: relative;
 }
+.link-cadastro {
+  color: #3b71ca;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

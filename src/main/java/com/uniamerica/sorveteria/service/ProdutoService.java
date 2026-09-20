@@ -4,10 +4,12 @@ import com.uniamerica.sorveteria.controller.produto.dto.ProdutoRequest;
 import com.uniamerica.sorveteria.entity.Categoria;
 import com.uniamerica.sorveteria.entity.Produto;
 import com.uniamerica.sorveteria.repository.ProdutoRepository;
+import com.uniamerica.sorveteria.repository.VendaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +18,7 @@ import java.util.List;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final VendaRepository vendaRepository;
 
     public Produto salvar(ProdutoRequest produtoRequest) {
         Produto produto = new Produto();
@@ -77,8 +80,12 @@ public class ProdutoService {
         return this.produtoRepository.save(produto);
     }
 
+      @Transactional
     public void deletarPorId(Long id) {
         Produto produto = this.buscarPorId(id);
+
+        // apaga primeiro as vendas do produto, depois o produto
+        this.vendaRepository.deleteAll(this.vendaRepository.findByProduto(produto));
         this.produtoRepository.delete(produto);
     }
 }

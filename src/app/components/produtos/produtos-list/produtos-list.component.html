@@ -5,6 +5,7 @@
                 <div class="card-body">
                     <h3>Listagem de produtos</h3>
                     <div class="direita">
+                        <button type="button" class="btn btn-success me-1" (click)="abrirVenda()">Venda</button>
                         <button type="button" class="btn btn-primary" routerLink="/admin/produtos/new">Novo</button>
                     </div>
                     <br>
@@ -26,6 +27,7 @@
                             <th scope="col">ID</th>
                             <th scope="col">Nome</th>
                             <th scope="col">Categoria</th>
+                            <th scope="col">Estoque</th>
                             <th scope="col" class="direita">Ações</th>
                             </tr>
                         </thead>
@@ -35,6 +37,7 @@
                                 <td>{{produto.id}}</td>
                                 <td>{{produto.nome}}</td>
                                 <td>{{produto.categoria}}</td>
+                                <td>{{produto.estoque}}</td>
                                 <td class="direita">
                                      <button type="button" class="btn btn-warning me-1" [routerLink]="['/admin/produtos/edit', produto.id]">Editar</button>
                                      <button type="button" class="btn btn-danger" (click)="deletar(produto)">Excluir</button>

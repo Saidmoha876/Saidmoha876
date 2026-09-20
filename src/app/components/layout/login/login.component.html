@@ -4,7 +4,8 @@
         <div class="col-lg-4">
             <div class="card centralizar">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Autenticação-Sorveteria</h5>
+                    <h1>🍦</h1>
+                    <h5 class="card-title mb-3">Sorveteria</h5>
                     <mdb-form-control>
                         <input mdbInput type="text" id="usuario" class="form-control mb-3" [(ngModel)]='usuario'/>
                         <label mdbLabel class="form-label" for="usuario">usuario</label>
@@ -14,10 +15,15 @@
                         <label mdbLabel class="form-label" for="senha">senha</label>
                     </mdb-form-control>
                     <button type="button" class="btn btn-primary" (click)="logar()" >Login</button>
+                     <br><br>
+                  <p class="mb-0">
+                     Não tem conta?
+                    <a routerLink="/usuario" class="link-cadastro">Cadastre-se</a>
+                   </p>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4"></div>
+     
     </div>
 </div>
 
