@@ -1,20 +1,9 @@
 package com.uniamerica.sorveteria.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * Item do cardapio vendido no caixa da sorveteria (ex.: sorvete, casquinha, acai, milk-shake).
- * Nao existe cadastro/visao para o cliente: quem cria, edita e consulta e apenas
- * o funcionario ou o gerente operando o caixa.
- */
 @Getter
 @Setter
 @Entity
@@ -25,15 +14,19 @@ public class Produto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+   @Column(name = "nome")
     private String nome;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "categoria")
     private Categoria categoria;
 
+    @Column(name = "preco")
     private Double preco;
 
+    @Column(name = "estoque")
     private Integer estoque;
 
-    // indica se o item pode ser vendido no caixa no momento (ex.: sabor em falta)
+    @Column(name = "disponivel")
     private Boolean disponivel;
 }

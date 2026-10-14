@@ -2,11 +2,10 @@ package com.uniamerica.sorveteria;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
-/**
- * Sistema de caixa da sorveteria.
- * Uso interno: apenas gerente e funcionario operam o sistema, nao ha acesso de cliente.
- */
+
+@EnableFeignClients
 @SpringBootApplication
 public class Application {
 
